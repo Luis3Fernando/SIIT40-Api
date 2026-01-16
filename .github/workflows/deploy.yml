@@ -1,0 +1,42 @@
+name: Deploy Django to Banahosting
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            # 1. Entrar a la carpeta del proyecto
+            cd /home/vyubgwtx/projects/siit40/siit40-api
+            
+            # 2. Bajar los cambios de GitHub
+            # Si es la primera vez, el servidor necesita permisos para Git
+            git pull origin main
+            
+            # 3. Activar el entorno virtual usando tu ruta exacta
+            source /home/vyubgwtx/virtualenv/projects/siit40/siit40-api/3.13/bin/activate
+            
+            # 4. Instalar dependencias
+            pip install -r requirements.txt
+            
+            # 5. Tareas de Django
+            python manage.py migrate --noinput
+            python manage.py collectstatic --noinput
+            
+            # 6. REINICIO MÁGICO (Passenger en Banahosting)
+            # Creamos la carpeta tmp si no existe y tocamos el archivo de reinicio
+            mkdir -p tmp
+            touch tmp/restart.txt
