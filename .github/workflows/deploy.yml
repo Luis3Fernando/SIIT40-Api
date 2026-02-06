@@ -18,7 +18,18 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd ~/proyectos/siit-api || git clone https://github.com/Luis3Fernando/SIIT40-Api.git ~/proyectos/siit-api
-            cd ~/proyectos/siit-api
-            git pull origin main
-            docker compose up -d --build
+            # Crear la carpeta de proyectos si no existe
+            mkdir -p ~/proyectos
+            cd ~/proyectos
+
+            if [ ! -d "siit-api" ]; then
+              git clone https://github.com/Luis3Fernando/SIIT40-Api.git
+              cd siit-api
+            else
+              cd siit-api
+              git pull origin main
+            fi
+
+            # Levantar los contenedores
+            # Usamos 'docker compose' (V2) que instalamos manualmente
+            ~/.docker/cli-plugins/docker-compose up -d --build
