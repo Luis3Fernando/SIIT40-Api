@@ -1,0 +1,36 @@
+version: '3.8'
+services:
+  db_siit:
+    image: postgres:15-alpine
+    container_name: db_siit_tesis
+    restart: always
+    environment:
+      POSTGRES_USER: admin_siit
+      POSTGRES_PASSWORD: password_tesis_2026
+      POSTGRES_DB: siit_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - siit_postgres_data:/var/lib/postgresql/data
+    networks:
+      - siit_net
+
+  siit-api:
+    build: .
+    container_name: siit_api_tesis
+    restart: always
+    ports:
+      - "8002:80"
+    depends_on:
+      - db_siit
+    networks:
+      - siit_net
+      - proxy_network 
+
+networks:
+  siit_net:
+  proxy_network:
+    external: true
+
+volumes:
+  siit_postgres_data:

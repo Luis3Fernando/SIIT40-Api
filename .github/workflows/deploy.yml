@@ -1,0 +1,24 @@
+name: Deploy SIIT40 API
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Deploy to Lightsail via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd ~/proyectos/siit-api || git clone https://github.com/Luis3Fernando/SIIT40-Api.git ~/proyectos/siit-api
+            cd ~/proyectos/siit-api
+            git pull origin main
+            docker compose up -d --build
