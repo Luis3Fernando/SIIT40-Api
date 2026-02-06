@@ -18,18 +18,20 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            # Crear la carpeta de proyectos si no existe
+            # 1. Asegurar que el directorio base existe
             mkdir -p ~/proyectos
             cd ~/proyectos
 
+            # 2. Clonar si no existe, o limpiar y actualizar si ya existe
             if [ ! -d "siit-api" ]; then
-              git clone https://github.com/Luis3Fernando/SIIT40-Api.git
+              git clone https://github.com/Luis3Fernando/SIIT40-Api.git siit-api
               cd siit-api
             else
               cd siit-api
-              git pull origin main
+              git fetch origin main
+              git reset --hard origin/main
             fi
 
-            # Levantar los contenedores
-            # Usamos 'docker compose' (V2) que instalamos manualmente
-            ~/.docker/cli-plugins/docker-compose up -d --build
+            # 3. Levantar usando la ruta absoluta del binario que instalamos
+            # Esto evita el error de "command not found" y limpia contenedores viejos
+            /home/ubuntu/.docker/cli-plugins/docker-compose up -d --build --remove-orphans
