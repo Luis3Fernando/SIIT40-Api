@@ -9,5 +9,5 @@ def saludo_tesis(usuario: str = "Invitado"):
         "mensaje": f"Hola {usuario}, consulta realizada con éxito",
         "fecha": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         "proyecto": "SIIT40 - Sistema de Invernadero Automatizado",
-        "estado": "Desarrollo"
+        "estado": "Desarrollo."
     }
