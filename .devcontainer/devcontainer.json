@@ -1,0 +1,16 @@
+{
+  "name": "SIIT40 API Dev",
+  "dockerComposeFile": ["../docker-compose.yml"],
+  "service": "siit-api",
+  "workspaceFolder": "/app",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "njpwerner.autodocstring"
+      ]
+    }
+  },
+  "remoteUser": "root"
+}
