@@ -39,7 +39,5 @@ class Plant(Base):
     last_watered = Column(DateTime, nullable=True)
     status = Column(String, default="active")
     planted_at = Column(DateTime, server_default=func.now())
-
-    # Relaciones para acceder fácil: planta.specie.name
     specie = relationship("Specie")
     greenhouse = relationship("Greenhouse")
