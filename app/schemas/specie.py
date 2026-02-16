@@ -1,17 +1,17 @@
 from pydantic import BaseModel, Field, field_validator
 from typing import Optional
 
-class SpecieBase(BaseModel):
-    speciesId: int = Field(..., alias="species_id")
+class SpecieOut(BaseModel):
+    species_id: int = Field(..., alias="speciesId")
     name: str
-    scientificName: str = Field(..., alias="scientific_name")
-    imageUrl: Optional[str] = Field(None, alias="image_url")
+    scientific_name: str = Field(..., alias="scientificName")
+    image_url: Optional[str] = Field(None, alias="imageUrl")
     color: str
     vol: float
     freq: int
     raw: float
 
-    @field_validator("imageUrl", mode="before")
+    @field_validator("image_url", mode="before")
     @classmethod
     def assemble_image_url(cls, v):
         if v and v.startswith("/static"):
@@ -19,5 +19,5 @@ class SpecieBase(BaseModel):
         return v
 
     class Config:
-        from_attributes = True 
-        populate_by_name = True 
+        from_attributes = True
+        populate_by_name = True
