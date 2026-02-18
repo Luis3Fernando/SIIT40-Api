@@ -1,15 +1,28 @@
-from .specie import SpecieBase
+from pydantic import BaseModel, Field
 from typing import Optional
 from datetime import datetime
-from pydantic import Field
 
-class PlantOut(SpecieBase):
+class PlantCreate(BaseModel):
+    greenhouse_id: int = Field(..., alias="greenhouseId")
+    species_id: int = Field(..., alias="speciesId")
+    zone: str
+    stage: Optional[str] = "Germinación"
+    count: int = 1
+
+class PlantUpdate(BaseModel):
+    stage: Optional[str] = None
+    status: Optional[str] = None
+    count: Optional[int] = None
+    is_critical: Optional[bool] = None
+
+class PlantOut(BaseModel):
     id: int
     zone: str
     stage: str
     count: int
-    isCritical: bool = Field(False, alias="is_critical")
-    lastWatered: Optional[datetime] = Field(None, alias="last_watered")
+    status: str
+    is_critical: bool = Field(..., alias="isCritical")
+    planted_at: datetime = Field(..., alias="plantedAt")
 
     class Config:
         from_attributes = True

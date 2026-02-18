@@ -9,6 +9,8 @@ class Greenhouse(Base):
     user_id = Column(Integer, ForeignKey("user.id"))
     name = Column(String)
     location = Column(String)
+    latitude = Column(Float, nullable=True)
+    longitude = Column(Float, nullable=True)
     created_at = Column(DateTime, server_default=func.now())
 
     user = relationship("User")
