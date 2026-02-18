@@ -20,7 +20,7 @@ from app.schemas.history import LocalBackupLog
 router = APIRouter()
 UPLOAD_DIR = Path("static/assets")
 
-@router.get("/api/v1/saludo")
+@router.get("/saludo")
 def saludo_tesis(usuario: str = "Invitado"):
     return {
         "mensaje": f"Hola {usuario}, consulta realizada con éxito",
