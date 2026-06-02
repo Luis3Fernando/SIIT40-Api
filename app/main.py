@@ -9,4 +9,3 @@ if not os.path.exists("static/assets"):
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 app.include_router(api_router, prefix="/api/v1")
-
