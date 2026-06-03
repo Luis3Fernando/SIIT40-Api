@@ -1,9 +1,9 @@
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
-from app.api.v1.endpoints import router as api_router
+from app.api.v1.api import api_router
 import os
 
-app = FastAPI(title="SIIT API - Tesis V1")
+app = FastAPI(title="SIIT API - Tesis V1", version="1.0.0")
 if not os.path.exists("static/assets"):
     os.makedirs("static/assets")
 
