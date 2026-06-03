@@ -1,29 +1,35 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
+from uuid import UUID
+from app.schemas.specie import SpecieOutDTO
 
-class PlantCreate(BaseModel):
-    greenhouse_id: int = Field(..., alias="greenhouseId")
-    species_id: int = Field(..., alias="speciesId")
+class PlantCreateDTO(BaseModel):
+    greenhouse_id: int
+    species_id: UUID
     zone: str
-    stage: Optional[str] = "Germinación"
-    count: int = 1
+    stage: str
+    count: Optional[int] = 1
 
-class PlantUpdate(BaseModel):
+class PlantUpdateDTO(BaseModel):
+    zone: Optional[str] = None
     stage: Optional[str] = None
-    status: Optional[str] = None
     count: Optional[int] = None
     is_critical: Optional[bool] = None
+    status: Optional[str] = None
 
-class PlantOut(BaseModel):
+class PlantOutDTO(BaseModel):
     id: int
+    greenhouse_id: int
+    species_id: UUID
     zone: str
     stage: str
     count: int
+    is_critical: bool
+    last_watered: Optional[datetime]
     status: str
-    is_critical: bool = Field(..., alias="isCritical")
-    planted_at: datetime = Field(..., alias="plantedAt")
+    planted_at: datetime
+    specie: Optional[SpecieOutDTO] = None
 
     class Config:
         from_attributes = True
-        populate_by_name = True
