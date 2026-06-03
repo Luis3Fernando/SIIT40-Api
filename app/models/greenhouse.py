@@ -1,5 +1,7 @@
+import uuid
 from sqlalchemy import Column, Integer, String, Float, Boolean, DateTime, ForeignKey, func
 from sqlalchemy.orm import relationship
+from sqlalchemy.dialects.postgresql import UUID as PG_UUID
 from .base import Base
 
 class Greenhouse(Base):
@@ -18,7 +20,7 @@ class Greenhouse(Base):
 class Specie(Base):
     __tablename__ = "specie"
 
-    species_id = Column(Integer, primary_key=True, index=True)
+    species_id = Column(PG_UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     name = Column(String, nullable=False)
     scientific_name = Column(String, nullable=False)
     image_url = Column(String)
@@ -33,7 +35,7 @@ class Plant(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     greenhouse_id = Column(Integer, ForeignKey("greenhouse.id"))
-    species_id = Column(Integer, ForeignKey("specie.species_id"))
+    species_id = Column(PG_UUID(as_uuid=True), ForeignKey("specie.species_id"))
     zone = Column(String)
     stage = Column(String)
     count = Column(Integer, default=1)
@@ -41,5 +43,6 @@ class Plant(Base):
     last_watered = Column(DateTime, nullable=True)
     status = Column(String, default="active")
     planted_at = Column(DateTime, server_default=func.now())
+
     specie = relationship("Specie")
     greenhouse = relationship("Greenhouse")

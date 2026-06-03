@@ -1,7 +1,11 @@
 from datetime import datetime, timedelta, timezone
 import jwt
 import bcrypt
+from fastapi import Depends, HTTPException, status
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from app.core.config import settings
+
+security_scheme = HTTPBearer()
 
 class SecurityUtils:
     @staticmethod
@@ -44,3 +48,15 @@ class SecurityUtils:
             return {"error": "Token expirado"}
         except jwt.InvalidTokenError:
             return {"error": "Token inválido"}
+
+def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security_scheme)) -> int:
+    token = credentials.credentials
+    payload = SecurityUtils.decode_token(token)
+    
+    if "error" in payload or payload.get("type") != "access":
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token inválido o expirado"
+        )
+        
+    return int(payload.get("sub"))

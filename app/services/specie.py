@@ -1,43 +1,28 @@
-import shutil
-import uuid
-from pathlib import Path
 from sqlalchemy.orm import Session
-from fastapi import UploadFile
+from uuid import UUID
 from app.models.greenhouse import Specie
-from app.schemas.specie import SpecieUpdateDTO
-
-UPLOAD_DIR = Path("static/assets")
+from app.schemas.specie import SpecieCreateDTO, SpecieUpdateDTO
 
 class SpecieService:
     def get_all(self, db: Session):
         return db.query(Specie).all()
 
-    def create(self, db: Session, name: str, scientific_name: str, color: str, vol: float, freq: int, raw: float, file: UploadFile):
-        UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
-        file_extension = Path(file.filename).suffix
-        unique_filename = f"{uuid.uuid4()}{file_extension}"
-        file_path = UPLOAD_DIR / unique_filename
-
-        with file_path.open("wb") as buffer:
-            shutil.copyfileobj(file.file, buffer)
-
-        image_url = f"/static/assets/{unique_filename}"
-
+    def create(self, db: Session, data: SpecieCreateDTO):
         new_specie = Specie(
-            name=name,
-            scientific_name=scientific_name,
-            image_url=image_url,
-            color=color,
-            vol=vol,
-            freq=freq,
-            raw=raw
+            name=data.name,
+            scientific_name=data.scientific_name,
+            image_url=data.image_url,
+            color=data.color,
+            vol=data.vol,
+            freq=data.freq,
+            raw=data.raw
         )
         db.add(new_specie)
         db.commit()
         db.refresh(new_specie)
         return new_specie
 
-    def update(self, db: Session, species_id: int, data: SpecieUpdateDTO):
+    def update(self, db: Session, species_id: UUID, data: SpecieUpdateDTO):
         specie = db.query(Specie).filter(Specie.species_id == species_id).first()
         if not specie:
             return {"error": "Especie no encontrada"}
@@ -50,7 +35,7 @@ class SpecieService:
         db.refresh(specie)
         return specie
 
-    def delete(self, db: Session, species_id: int):
+    def delete(self, db: Session, species_id: UUID):
         specie = db.query(Specie).filter(Specie.species_id == species_id).first()
         if not specie:
             return {"error": "Especie no encontrada"}
