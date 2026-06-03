@@ -1,2 +1,37 @@
 .env
 /env
+
+# Python (Archivos compilados y cachés)
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Variables de entorno y credenciales (¡SÚPER IMPORTANTE!)
+.env
+.env.local
+.env.*
+secrets.json
+
+# IDEs y Editores
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+# Bases de datos locales de prueba (si usaras SQLite temporalmente)
+*.db
+*.sqlite3
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
