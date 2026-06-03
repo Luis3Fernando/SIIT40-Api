@@ -1,24 +1,39 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 from app.core.database import get_db
-from app.schemas.user import UserCreate, UserOut
-from app.crud import crud_user
+from app.schemas.base_response import APIResponse
+from app.schemas.auth import LoginDTO, TokenRefreshRequestDTO, LoginResponseDataDTO
+from app.services.auth import auth_service
+from app.utils.response_helper import ResponseHelper
 
 router = APIRouter()
 
-@router.post("/register", response_model=UserOut)
-def register(user_data: UserCreate, db: Session = Depends(get_db)):
-    existing_user = crud_user.get_user_by_email(db, email=user_data.email)
-    if existing_user:
-        raise HTTPException(status_code=400, detail="El correo ya está registrado")
-    return crud_user.create_user(db, user_data=user_data)
+@router.post("/login", response_model=APIResponse[LoginResponseDataDTO])
+def login(credentials: LoginDTO, db: Session = Depends(get_db)):
+    result = auth_service.login(db, credentials)
+    
+    if "error" in result:
+        return ResponseHelper.error(message=result["error"], msg_type="warning")
+        
+    return ResponseHelper.success(
+        message="Autenticación exitosa. ¡Bienvenido!",
+        data=result
+    )
 
-@router.post("/login", response_model=UserOut)
-def login(user_data: UserCreate, db: Session = Depends(get_db)):
-    user = crud_user.authenticate_user(db, email=user_data.email, password=user_data.password)
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, 
-            detail="Credenciales incorrectas"
-        )
-    return user
+@router.post("/refresh", response_model=APIResponse)
+def refresh_token(body: TokenRefreshRequestDTO):
+    result = auth_service.refresh_token(body.refreshToken)
+    
+    if "error" in result:
+        return ResponseHelper.error(message=f"No se pudo refrescar el token: {result['error']}")
+        
+    return ResponseHelper.success(
+        message="Token actualizado correctamente",
+        data=result
+    )
+
+@router.post("/logout", response_model=APIResponse)
+def logout():
+    return ResponseHelper.success(
+        message="Sesión cerrada correctamente en el dispositivo"
+    )
