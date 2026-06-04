@@ -3,6 +3,7 @@ from app.api.v1.routes import auth
 from app.api.v1.routes import utils
 from app.api.v1.routes import specie
 from app.api.v1.routes import plant
+from app.api.v1.routes import history
 
 api_router = APIRouter()
 
@@ -10,6 +11,8 @@ api_router.include_router(utils.router, prefix="/utils", tags=["Utilidades / Pru
 api_router.include_router(auth.router, prefix="/auth", tags=["Autenticación"])
 api_router.include_router(specie.router, prefix="/specie", tags=["Especies"])
 api_router.include_router(plant.router, prefix="/plant", tags=["Plantas / Cultivos"])
+api_router.include_router(history.router, prefix="/history", tags=["Historial de Telemetría"])
+
 # api_router.include_router(plant.router, prefix="/plant", tags=["Plantas"])
 # api_router.include_router(specie.router, prefix="/specie", tags=["Especies"])
 # api_router.include_router(history.router, prefix="/history", tags=["Telemetría e Historial"])
