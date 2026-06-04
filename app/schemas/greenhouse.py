@@ -1,25 +1,29 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 from datetime import datetime
-from typing import List, Optional
-from .plant import PlantOut
+from typing import Optional
 
-class GreenhouseCreate(BaseModel):
-    name: str
-    location: str
-    latitude: float
-    longitude: float
-    userId: int = Field(..., alias="user_id")
+class PlantSummaryDTO(BaseModel):
+    total_plants_count: int
+    active_crop_sectors: int
+    has_critical_plants: bool
 
-class GreenhouseOut(BaseModel):
-    id: int
-    name: str
-    location: str
-    latitude: Optional[float]
-    longitude: Optional[float]
-    created_at: datetime
-    plants: List[PlantOut] = [] 
-    plant_count: int = 0
+class LatestTelemetryDTO(BaseModel):
+    recorded_at: datetime
+    nodo_id: str
+    temp_c: float
+    hum_pct: float
+    soil_raw: int
+    ph: float
+    co2: float
+    lux: float
+    valve_open: bool
+    is_manual: bool
+    sd_status_pct: float
+
+class GreenhouseStatusOutDTO(BaseModel):
+    greenhouse_id: int
+    plant_summary: PlantSummaryDTO
+    latest_telemetry: Optional[LatestTelemetryDTO] = None
 
     class Config:
         from_attributes = True
-        populate_by_name = True
