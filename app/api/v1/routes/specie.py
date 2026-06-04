@@ -9,7 +9,7 @@ from app.schemas.specie import SpecieOutDTO, SpecieCreateDTO, SpecieUpdateDTO
 from app.services.specie import specie_service
 from app.utils.response_helper import ResponseHelper
 
-router = APIRouter(dependencies=[Depends(get_current_user)])
+router = APIRouter()
 
 @router.get("", response_model=APIResponse[List[SpecieOutDTO]])
 def get_all_species(db: Session = Depends(get_db)):
@@ -20,7 +20,7 @@ def get_all_species(db: Session = Depends(get_db)):
     )
 
 @router.post("", response_model=APIResponse[SpecieOutDTO])
-def create_specie(data: SpecieCreateDTO, db: Session = Depends(get_db)):
+def create_specie(data: SpecieCreateDTO, db: Session = Depends(get_db), current_user: int = Depends(get_current_user)):
     result = specie_service.create(db, data)
     return ResponseHelper.success(
         message="Especie creada correctamente",
@@ -28,7 +28,7 @@ def create_specie(data: SpecieCreateDTO, db: Session = Depends(get_db)):
     )
 
 @router.patch("/{species_id}", response_model=APIResponse[SpecieOutDTO])
-def update_specie(species_id: UUID, data: SpecieUpdateDTO, db: Session = Depends(get_db)):
+def update_specie(species_id: UUID, data: SpecieUpdateDTO, db: Session = Depends(get_db), current_user: int = Depends(get_current_user)):
     result = specie_service.update(db, species_id, data)
     if isinstance(result, dict) and "error" in result:
         return ResponseHelper.error(message=result["error"], msg_type="warning")
@@ -38,7 +38,7 @@ def update_specie(species_id: UUID, data: SpecieUpdateDTO, db: Session = Depends
     )
 
 @router.delete("/{species_id}", response_model=APIResponse)
-def delete_specie(species_id: UUID, db: Session = Depends(get_db)):
+def delete_specie(species_id: UUID, db: Session = Depends(get_db), current_user: int = Depends(get_current_user)):
     result = specie_service.delete(db, species_id)
     if "error" in result:
         return ResponseHelper.error(message=result["error"], msg_type="warning")

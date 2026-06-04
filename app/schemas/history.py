@@ -1,17 +1,16 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 from typing import List, Optional
-from datetime import datetime
 
-class ActuadoresDTO(BaseModel):
+class EstadoActuadoresDTO(BaseModel):
     Valvula: int
     Manual: int
 
-class AguaDTO(BaseModel):
+class MetricasAguaDTO(BaseModel):
     Lmin: float
     Total_L: float
 
-class AmbientalesDTO(BaseModel):
-    Suelo_RAW: int
+class MetricasAmbientalesDTO(BaseModel):
+    Suelo_RAW: float
     Temp_C: float
     Hum_Pct: float
     pH: float
@@ -21,15 +20,15 @@ class AmbientalesDTO(BaseModel):
 class SistemaDTO(BaseModel):
     Memoria_SD_Pct: float
 
-class TelemetriaDTO(BaseModel):
+class TelemetriaRecordDTO(BaseModel):
     TS: str
     Nodo_ID: str
     Descripcion: str
-    Estado_Actuadores: ActuadoresDTO
-    Metricas_Agua: AguaDTO
-    Metricas_Ambientales: AmbientalesDTO
+    Estado_Actuadores: EstadoActuadoresDTO
+    Metricas_Agua: MetricasAguaDTO
+    Metricas_Ambientales: MetricasAmbientalesDTO
     Sistema: SistemaDTO
 
-class LocalBackupLog(BaseModel):
+class LocalBackupLogDTO(BaseModel):
     fileName: str
-    data: List[TelemetriaDTO]
+    data: List[TelemetriaRecordDTO]

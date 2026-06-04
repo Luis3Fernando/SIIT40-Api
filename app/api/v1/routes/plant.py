@@ -2,13 +2,12 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from typing import List
 from app.core.database import get_db
-from app.core.security import get_current_user
 from app.schemas.base_response import APIResponse
 from app.schemas.plant import PlantOutDTO, PlantCreateDTO, PlantUpdateDTO
 from app.services.plant import plant_service
 from app.utils.response_helper import ResponseHelper
 
-router = APIRouter(dependencies=[Depends(get_current_user)])
+router = APIRouter()
 
 @router.post("", response_model=APIResponse[PlantOutDTO])
 def create_plant(data: PlantCreateDTO, db: Session = Depends(get_db)):
