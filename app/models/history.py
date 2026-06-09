@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, BigInteger, String, Float, Boolean, DateTime, ForeignKey, func
+from sqlalchemy import Column, Integer, BigInteger, String, Float, Boolean, DateTime, ForeignKey, func, UniqueConstraint
 from .base import Base
 
 class TelemetryHistory(Base):
@@ -24,3 +24,7 @@ class TelemetryHistory(Base):
     valve_open = Column(Boolean)
     is_manual = Column(Boolean)
     uploaded_at = Column(DateTime, server_default=func.now())
+
+    __table_args__ = (
+        UniqueConstraint('greenhouse_id', 'nodo_id', 'recorded_at', name='_greenhouse_nodo_timestamp_uc'),
+    )
