@@ -4,7 +4,7 @@ from typing import List, Optional
 from app.core.database import get_db
 from app.core.security import get_current_user
 from app.schemas.base_response import APIResponse
-from app.schemas.analytics import TimeSeriesPointDTO
+from app.schemas.analytics import TimeSeriesPointDTO, WaterAnalyticsResponseDTO
 from app.services.analytics import analytics_service
 from app.utils.response_helper import ResponseHelper
 
@@ -23,4 +23,18 @@ def get_greenhouse_time_series(
     return ResponseHelper.success(
         message="Series temporales completas obtenidas con éxito",
         data=series_data
+    )
+    
+@router.get("/water-consumption/{gh_id}", response_model=APIResponse[WaterAnalyticsResponseDTO])
+def get_greenhouse_water_analytics(
+    gh_id: int,
+    bucket_unit: str = Query("month", description="Opciones: 'month' o 'day'"),
+    start_date: Optional[str] = Query(None, description="YYYY-MM-DD"),
+    end_date: Optional[str] = Query(None, description="YYYY-MM-DD"),
+    db: Session = Depends(get_db)
+):
+    water_data = analytics_service.get_water_analytics(db, gh_id, bucket_unit, start_date, end_date)
+    return ResponseHelper.success(
+        message="Métricas de optimización de agua procesadas",
+        data=water_data
     )
